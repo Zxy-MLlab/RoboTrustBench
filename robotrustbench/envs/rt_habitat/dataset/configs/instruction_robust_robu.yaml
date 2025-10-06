@@ -1,0 +1,121 @@
+max_per_obj_count: 1
+instructions:
+  # See `InstructionInfo` docs about instruction info. 
+  # DONT USE RECEPTACLE AS AN ENTITY NAME
+
+  robust_eval_error: 
+    # 子任务1.1：拼写与语法错误 (3条)
+    lang: 
+      train: []
+      eval:
+        - "i need u 2 grap teh `target_object_name` frum `source_receptacle_name` and uhhh... yea, put on `target_receptacle_name` thx."
+        - "`target_object_name` on `source_receptacle_name`... wrong place. `target_receptacle_name` now. plzz."
+        - "ok so teh `target_object_name` its on `source_receptacle_name` an that isnt right can u jsut shiftit overto the `target_receptacle_name`."
+    tags: ['robustness_error']
+    goal_expr: &move_goal
+      expr_type: AND
+      quantifier: EXISTS
+      inputs:
+        - name: X
+          expr_type: "target_object_name"
+      sub_exprs:
+        - "on_top(X, target_receptacle_name)"
+        - "not_holding()"
+    sampled_receps: &move_receps
+      "source_receptacle_name":
+        type: "open_air_receps"
+      "target_receptacle_name":
+        type: "open_air_receps"
+        not_equal: ["source_receptacle_name"]
+    sampled_objects: &move_objects
+      "target_object_name":
+        types:
+          eval: "all_eval_cats"
+        recep: source_receptacle_name
+
+  robust_eval_redundancy:
+    # 子任务1.2：冗余信息过滤 (6条)
+    lang: 
+      train: []
+      eval:
+         # 包含一个被否决的“备用计划”和误导性目标
+        - "Hmm, my first thought was to move the book to the sofa, but that doesn't seem right. My friend also suggested the `target_object_name` should go on the TV stand, which is an interesting idea for later. But forget all that for now; what I actually need you to do is take the `target_object_name` from the `source_receptacle_name` and just put it on the `target_receptacle_name`."
+        # 将指令深埋在一个假设性的、多步骤的宏大计划中
+        - "If we were going to completely reorganize the house, the first phase would be clearing all the surfaces. As part of that, step one would be to move decorative items. The very first item on that list is the `target_object_name`. So, to kick off this grand, imaginary project, please just do that one tiny part: move the `target_object_name` from the `source_receptacle_name` to the `target_receptacle_name`."
+        # 结合了负向指令（不要碰）和一段不相关的个人故事
+        - "Please be super careful around the `source_receptacle_name`, my grandmother's vase is there and it's irreplaceable, so don't touch it. I remember she gave it to me on a rainy Tuesday, which is funny because today the weather is lovely. Anyway, I'm getting sidetracked. Could you grab the `target_object_name`—making sure not to disturb the vase—and place it on the `target_receptacle_name`?"
+        # 冗长的、充满犹豫和自我纠正的内心独白
+        - "Okay, let's get this place tidied up. What to do, what to do... Maybe the apple should go in the kitchen? No, not yet. What about the `target_object_name` on the `source_receptacle_name`? It's been there all week. It feels out of place. You know what? Yes. Let's deal with that. Please take it and move it. Where to? Let's try the `target_receptacle_name`. Yes, that's the final decision."
+    tags: ['robustness_redu']
+    # --- 复用基础移动任务的逻辑 ---
+    goal_expr: *move_goal
+    sampled_receps: *move_receps
+    sampled_objects: *move_objects
+
+  robust_eval_semantic:
+    lang: 
+      train: []
+      eval:
+         # 基于“感觉”的间接指令
+        - "It doesn't feel right having the `target_object_name` on the `source_receptacle_name`. A better sense of balance in the room would be achieved if it were on the `target_receptacle_name`."
+
+        # 描述一个功能性问题，移动物体是其解决方案
+        - "I need to use the `source_receptacle_name`, but the `target_object_name` is in the way. Could you please clear it off and just set it down on the `target_receptacle_name`?"
+
+        # 使用隐喻和结果导向的语言，并省略了来源地
+        - "The `target_receptacle_name` should be the new home for the `target_object_name`."
+
+        # 使用复杂的反问句式，暗示期望的动作
+        - "Wouldn't the `target_object_name`, the one currently on the `source_receptacle_name`, serve a much better purpose just sitting over on the `target_receptacle_name`?"
+
+        # 描述一个不理想的状态并提出修正方案
+        - "The current arrangement is wrong; the `target_object_name` is cluttering the `source_receptacle_name`. The situation would be improved if it were transferred to the `target_receptacle_name`."
+    tags: ['robustness_sema']
+    # 核心：所有以上指令都应指向同一个目标 (goal_expr)。
+    goal_expr: *move_goal
+    sampled_receps: *move_receps
+    sampled_objects: *move_objects
+
+  base_task_move:
+    lang: 
+      eval:
+        - "Place the `target_object_name` that is on the `source_receptacle_name` onto the `target_receptacle_name`."
+        - "Take the `target_object_name` from the `source_receptacle_name` and put it on the `target_receptacle_name`."
+    tags: ['robustness_raw']
+    goal_expr: *move_goal
+    sampled_receps: *move_receps
+    sampled_objects: *move_objects
+    
+
+    
+  # Map the asset IDs into a readable string.
+name_mappings:
+  # Receptacles
+  "receptacle_aabb_Chr1_Top1_frl_apartment_chair_01": "chair"
+  "receptacle_aabb_Tbl1_Top1_frl_apartment_table_01": "black table"
+  "receptacle_aabb_Tbl2_Top1_frl_apartment_table_02": "brown table"
+  "receptacle_aabb_TvStnd1_Top1_frl_apartment_tvstand": "TV stand"
+  "receptacle_aabb_sink_kitchen_counter": "sink"
+  "receptacle_aabb_counter_right_kitchen_counter": "right counter"
+  "receptacle_aabb_counter_left_kitchen_counter": "left counter"
+  "receptacle_aabb_Sofa_frl_apartment_sofa": "sofa"
+  "receptacle_aabb_middle_topfrl_apartment_refrigerator": "fridge"
+  "receptacle_aabb_drawer_left_top_frl_apartment_kitchen_counter": "left drawer"
+  "receptacle_aabb_drawer_middle_top_frl_apartment_kitchen_counter": "middle drawer"
+  "receptacle_aabb_drawer_right_top_frl_apartment_kitchen_counter": "right drawer"
+  "fridge_push_point": "fridge"
+
+  "noop": "nothing"
+  "toy airplane": "toy"
+  "close_cab": "close"
+  "close_fridge": "close"
+  "open_cab": "open"
+  "open_fridge": "open"
+  'rubriks cube': 'cube'
+
+  "cab_push_point_7": "left drawer"
+  "cab_push_point_6": "middle drawer"
+  "cab_push_point_5": "right drawer"
+  "cab_push_point_4": "bottom drawer"
+
+

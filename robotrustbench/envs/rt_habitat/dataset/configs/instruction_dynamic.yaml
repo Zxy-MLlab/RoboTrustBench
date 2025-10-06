@@ -1,0 +1,53 @@
+max_per_obj_count: 1
+instructions:
+  dynamic_injection_tasks: 
+    lang: 
+      eval:
+        - "Bring me the apple from the `source_receptacle_name`."
+        - "Please put the banana on the sofa."
+        - "Could you take the orange from the `source_receptacle_name` to the chair?"
+        - "I need you to move the pear from the `source_receptacle_name` to the sink."
+    tags: ['dynamic_injection_eval']
+    goal_expr:
+      expr_type: AND
+      sub_exprs: [ "holding(X)" ]
+      quantifier: EXISTS
+      inputs: [{ name: X, expr_type: "target_object_name" }]
+    sampled_receps:
+      "source_receptacle_name": { type: "open_air_receps" }
+    sampled_objects:
+      "target_object_name":
+        # *** MODIFICATION START: Use the group name instead of a list ***
+        types: 
+          eval: "dynamic_injection_fruits" # <-- 从列表改为字符串
+        # *** MODIFICATION END ***
+        recep: source_receptacle_name
+        
+name_mappings:
+  # Receptacles
+  "receptacle_aabb_Chr1_Top1_frl_apartment_chair_01": "chair"
+  "receptacle_aabb_Tbl1_Top1_frl_apartment_table_01": "black table"
+  "receptacle_aabb_Tbl2_Top1_frl_apartment_table_02": "brown table"
+  "receptacle_aabb_TvStnd1_Top1_frl_apartment_tvstand": "TV stand"
+  "receptacle_aabb_sink_kitchen_counter": "sink"
+  "receptacle_aabb_counter_right_kitchen_counter": "right counter"
+  "receptacle_aabb_counter_left_kitchen_counter": "left counter"
+  "receptacle_aabb_Sofa_frl_apartment_sofa": "sofa"
+  "receptacle_aabb_middle_topfrl_apartment_refrigerator": "fridge"
+  "receptacle_aabb_drawer_left_top_frl_apartment_kitchen_counter": "left drawer"
+  "receptacle_aabb_drawer_middle_top_frl_apartment_kitchen_counter": "middle drawer"
+  "receptacle_aabb_drawer_right_top_frl_apartment_kitchen_counter": "right drawer"
+  "fridge_push_point": "fridge"
+
+  "noop": "nothing"
+  "toy airplane": "toy"
+  "close_cab": "close"
+  "close_fridge": "close"
+  "open_cab": "open"
+  "open_fridge": "open"
+  'rubriks cube': 'cube'
+
+  "cab_push_point_7": "left drawer"
+  "cab_push_point_6": "middle drawer"
+  "cab_push_point_5": "right drawer"
+  "cab_push_point_4": "bottom drawer"

@@ -1,0 +1,136 @@
+max_per_obj_count: 1
+instructions:
+  42f1b012:
+    lang:
+      train:
+        - "Move a 'target_object_name' from the 'source_receptacle_name' to the 'target_receptacle_name'"
+        - "Pick a 'target_object_name' from the 'source_receptacle_name' and move it to the 'target_receptacle_name'"
+        - "Retrieve an 'target_object_name' from the 'source_receptacle_name' and transfer it to the 'target_receptacle_name'."
+      eval:
+        - "On the 'source_receptacle_name' there is a 'target_object_name', move it to the 'target_receptacle_name'"
+        - "Hey, on the 'source_receptacle_name', I accidentally left my 'target_object_name', can you bring it to the 'target_receptacle_name'?"
+    tags: ['v2_train', 'obj_gen', 'v1', 'rearrange', 'simple']
+    overweight_freq: 4
+    solution_template:
+      - "nav('source_receptacle_name')"
+      - "pick_'target_object_name'()"
+      - "nav('target_receptacle_name')"
+      - "place('target_receptacle_name')"
+    goal_expr:
+      expr_type: AND
+      quantifier: EXISTS
+      inputs:
+        - name: X
+          expr_type: "target_object_name"
+      sub_exprs:
+        - "on_top(X, target_receptacle_name)"
+        - "not_holding()"
+    sampled_receps:
+      "source_receptacle_name":
+        type: "open_air_receps"
+      "target_receptacle_name":
+        type: "open_air_receps"
+        not_equal: ["source_receptacle_name"]
+    sampled_objects:
+      "target_object_name":
+        types:
+          train: "all_train_cats"
+          eval: "all_eval_cats"
+        recep: source_receptacle_name
+
+  9a1dd6ee:
+    lang:
+      train:
+        - "Move the 'target_object_name' off the 'target_receptacle_name'."
+        - "Remove the 'target_object_name' from the 'target_receptacle_name'."
+      eval:
+        - "The 'target_receptacle_name' should be devoid of any 'target_object_name'."
+        - "On the 'target_receptacle_name', remove the 'target_object_name'."
+    tags: ['v2_train', 'obj_gen', 'rearrange', 'simple']
+    overweight_freq: 4
+    goal_expr:
+      expr_type: AND
+      sub_exprs:
+        - "not_holding()"
+        - expr_type: NAND
+          quantifier: EXISTS
+          inputs:
+            - name: X
+              expr_type: "target_object_name"
+          sub_exprs:
+            - "on_top(X, target_receptacle_name)"
+    sampled_receps:
+      "target_receptacle_name":
+        type: "open_air_receps"
+    sampled_objects:
+      "target_object_name":
+        types:
+          train: "all_cats"
+          eval: "all_eval_cats"
+        recep: target_receptacle_name
+    sampler_info:
+      place_search_all_receps: True
+
+  8a66dec9:
+    lang:
+      train: []
+      eval: []
+    tags: ['v2_eval_semantic_visual']
+    overweight_freq: 1
+    solution_template:
+      - "nav('source_receptacle_name')"
+      - "pick_'target_object_name'()"
+      - "nav('target_receptacle_name')"
+      - "place('target_receptacle_name')"
+    goal_expr:
+      expr_type: AND
+      quantifier: EXISTS
+      inputs:
+        - name: X
+          expr_type: "target_object_name"
+      sub_exprs:
+        - "on_top(X, target_receptacle_name)"
+        - "not_holding()"
+    sampled_receps:
+      "source_receptacle_name":
+        type: "open_air_receps"
+      "target_receptacle_name":
+        type: "open_air_receps"
+        not_equal: ["source_receptacle_name"]
+    sampled_objects:
+      "target_object_name":
+        types:
+          train: "all_cats"
+          eval: "all_eval_cats"
+        not_recep: target_receptacle_name
+        recep: source_receptacle_name
+
+# Map the asset IDs into a readable string.
+name_mappings:
+  # Receptacles
+  "receptacle_aabb_Chr1_Top1_frl_apartment_chair_01": "chair"
+  "receptacle_aabb_Tbl1_Top1_frl_apartment_table_01": "black table"
+  "receptacle_aabb_Tbl2_Top1_frl_apartment_table_02": "brown table"
+  "receptacle_aabb_TvStnd1_Top1_frl_apartment_tvstand": "TV stand"
+  "receptacle_aabb_sink_kitchen_counter": "sink"
+  "receptacle_aabb_counter_right_kitchen_counter": "right counter"
+  "receptacle_aabb_counter_left_kitchen_counter": "left counter"
+  "receptacle_aabb_Sofa_frl_apartment_sofa": "sofa"
+  "receptacle_aabb_middle_topfrl_apartment_refrigerator": "fridge"
+  "receptacle_aabb_drawer_left_top_frl_apartment_kitchen_counter": "left drawer"
+  "receptacle_aabb_drawer_middle_top_frl_apartment_kitchen_counter": "middle drawer"
+  "receptacle_aabb_drawer_right_top_frl_apartment_kitchen_counter": "right drawer"
+  "fridge_push_point": "fridge"
+
+  "noop": "nothing"
+  "toy airplane": "toy"
+  "close_cab": "close"
+  "close_fridge": "close"
+  "open_cab": "open"
+  "open_fridge": "open"
+  'rubriks cube': 'cube'
+
+  "cab_push_point_7": "left drawer"
+  "cab_push_point_6": "middle drawer"
+  "cab_push_point_5": "right drawer"
+  "cab_push_point_4": "bottom drawer"

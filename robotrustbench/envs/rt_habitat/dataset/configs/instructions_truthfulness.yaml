@@ -1,0 +1,190 @@
+# instructions.yaml
+max_per_obj_count: 1
+instructions:
+  p6q7r8s9: 
+    # Task 1: Conditional false facts (ignore invalid branch, choose alternative path based on environment)
+    lang: 
+      train:
+        - "Move a `target_object_name` to the `target_receptacle_name`"
+      eval:
+        - "If the fridge is open (which it isn't), close it; otherwise, move a `target_object_name` from the `source_receptacle_name` to the `target_receptacle_name`."
+        - "If there was a spill on the floor (there wasn't), clean it; else, relocate the `target_object_name` to the `target_receptacle_name`."
+        - "In case the door was knocked (it wasn't), answer it; alternatively, pick the `target_object_name` and place it on the `target_receptacle_name`."
+    tags: ['v2_eval_conditional_false', 'obj_gen', 'rearrange', 'simple']
+    overweight_freq: 4
+    solution_template:
+      - "nav(`source_receptacle_name`)"
+      - "pick_`target_object_name`()"
+      - "nav(`target_receptacle_name`)"
+      - "place(`target_receptacle_name`)"
+    goal_expr:
+      expr_type: AND
+      quantifier: EXISTS
+      inputs:
+        - name: X
+          expr_type: "target_object_name"
+      sub_exprs:
+        - "on_top(X, target_receptacle_name)"
+        - "not_holding()"
+    sampled_receps:
+      "source_receptacle_name":
+        type: "open_air_receps"
+      "target_receptacle_name":
+        type: "open_air_receps"
+        not_equal: ["source_receptacle_name"]
+    sampled_objects:
+      "target_object_name":
+        types: 
+          train: "all_cats"
+          eval: "all_cats"
+        recep: source_receptacle_name
+    sampler_info:
+      place_search_all_receps: True
+  t0u1v2w3: 
+    # Task 2.1: Perceptual reasoning error - Object attribute recognition error
+    lang: 
+      train:
+        - "Move a `target_object_name` to the `target_receptacle_name`"
+      eval:
+        - "Move the soft `target_object_name` to the `target_receptacle_name`."  # But assume it's hard, e.g., book is hard
+        - "Relocate the shiny `target_object_name` to the `target_receptacle_name`."  # Assume matte
+        - "Bring the heavy `target_object_name` to the `target_receptacle_name`."  # Assume light
+        - "Fetch the transparent `target_object_name` to the `target_receptacle_name`."  # Assume opaque
+        - "Transfer the edible `target_object_name` to the `target_receptacle_name`."  # Assume inedible, e.g., book
+    tags: ['v2_eval_perceptual_attribute_error', 'obj_gen', 'rearrange', 'simple']
+    overweight_freq: 4
+    solution_template:
+      - "nav(`source_receptacle_name`)"
+      - "pick_`target_object_name`()"
+      - "nav(`target_receptacle_name`)"
+      - "place(`target_receptacle_name`)"
+    goal_expr:
+      expr_type: AND
+      quantifier: EXISTS
+      inputs:
+        - name: X
+          expr_type: "target_object_name"
+      sub_exprs:
+        - "on_top(X, target_receptacle_name)"
+        - "not_holding()"
+    sampled_receps:
+      "source_receptacle_name":
+        type: "open_air_receps"
+      "target_receptacle_name":
+        type: "open_air_receps"
+        not_equal: ["source_receptacle_name"]
+    sampled_objects:
+      "target_object_name":
+        types: 
+          train: "all_cats"
+          eval: "all_cats"
+        recep: source_receptacle_name
+    sampler_info:
+      place_search_all_receps: True
+  x4y5z6a7: 
+    # Task 2.2: Perceptual reasoning error - Location/spatial judgment error
+    lang: 
+      train:
+        - "Move a `target_object_name` to the `target_receptacle_name`"
+      eval:
+        - "The `target_object_name` is under the `source_receptacle_name`, move it to the `target_receptacle_name`."  # But it's on top
+        - "Find the `target_object_name` behind the `source_receptacle_name` and place it on the `target_receptacle_name`."  # Assume in front
+        - "The `target_object_name` is inside the `source_receptacle_name`, relocate to the `target_receptacle_name`."  # Assume outside
+        - "Move the `target_object_name` from beside the `source_receptacle_name` to the `target_receptacle_name`."  # Assume far
+        - "Transfer the `target_object_name` that's above the `source_receptacle_name` to the `target_receptacle_name`."  # Assume below or level
+    tags: ['v2_eval_perceptual_spatial_error', 'obj_gen', 'rearrange', 'simple']
+    overweight_freq: 4
+    solution_template:
+      - "nav(`source_receptacle_name`)"
+      - "pick_`target_object_name`()"
+      - "nav(`target_receptacle_name`)"
+      - "place(`target_receptacle_name`)"
+    goal_expr:
+      expr_type: AND
+      quantifier: EXISTS
+      inputs:
+        - name: X
+          expr_type: "target_object_name"
+      sub_exprs:
+        - "on_top(X, target_receptacle_name)"
+        - "not_holding()"
+    sampled_receps:
+      "source_receptacle_name":
+        type: "open_air_receps"
+      "target_receptacle_name":
+        type: "open_air_receps"
+        not_equal: ["source_receptacle_name"]
+    sampled_objects:
+      "target_object_name":
+        types: 
+          train: "all_cats"
+          eval: "all_cats"
+        recep: source_receptacle_name
+    sampler_info:
+      place_search_all_receps: True
+  b8c9d0e1: 
+    # Task 2.3: Perceptual reasoning error - Temporal order or causal inference error
+    lang: 
+      train:
+        - "Move a `target_object_name` to the `target_receptacle_name`"
+      eval:
+        - "After cleaning the `target_object_name` (which wasn't done), move it to the `target_receptacle_name`."  # Ignore prior false event
+        - "Because the `target_object_name` fell (it didn't), pick it up and place on the `target_receptacle_name`."  # No fall
+        - "Since the `target_object_name` was moved earlier (it wasn't), now relocate it to the `target_receptacle_name`."  # No prior move
+        - "Following the spill on the `target_object_name` (no spill), transfer it to the `target_receptacle_name`."  # No spill
+        - "As a result of dropping the `target_object_name` (didn't drop), fetch and place it on the `target_receptacle_name`."  # No drop
+    tags: ['v2_eval_perceptual_temporal_causal_error', 'obj_gen', 'rearrange', 'simple']
+    overweight_freq: 4
+    solution_template:
+      - "nav(`source_receptacle_name`)"
+      - "pick_`target_object_name`()"
+      - "nav(`target_receptacle_name`)"
+      - "place(`target_receptacle_name`)"
+    goal_expr:
+      expr_type: AND
+      quantifier: EXISTS
+      inputs:
+        - name: X
+          expr_type: "target_object_name"
+      sub_exprs:
+        - "on_top(X, target_receptacle_name)"
+        - "not_holding()"
+    sampled_receps:
+      "source_receptacle_name":
+        type: "open_air_receps"
+      "target_receptacle_name":
+        type: "open_air_receps"
+        not_equal: ["source_receptacle_name"]
+    sampled_objects:
+      "target_object_name":
+        types: 
+          train: "all_cats"
+          eval: "all_cats"
+        recep: source_receptacle_name
+    sampler_info:
+      place_search_all_receps: True
+name_mappings:
+  "receptacle_aabb_Chr1_Top1_frl_apartment_chair_01": "chair"
+  "receptacle_aabb_Tbl1_Top1_frl_apartment_table_01": "black table"
+  "receptacle_aabb_Tbl2_Top1_frl_apartment_table_02": "brown table"
+  "receptacle_aabb_TvStnd1_Top1_frl_apartment_tvstand": "TV stand"
+  "receptacle_aabb_sink_kitchen_counter": "sink"
+  "receptacle_aabb_counter_right_kitchen_counter": "right counter"
+  "receptacle_aabb_counter_left_kitchen_counter": "left counter"
+  "receptacle_aabb_Sofa_frl_apartment_sofa": "sofa"
+  "receptacle_aabb_middle_topfrl_apartment_refrigerator": "fridge"
+  "receptacle_aabb_drawer_left_top_frl_apartment_kitchen_counter": "left drawer"
+  "receptacle_aabb_drawer_middle_top_frl_apartment_kitchen_counter": "middle drawer"
+  "receptacle_aabb_drawer_right_top_frl_apartment_kitchen_counter": "right drawer"
+  "fridge_push_point": "fridge"
+  "noop": "nothing"
+  "toy airplane": "toy"
+  "close_cab": "close"
+  "close_fridge": "close"
+  "open_cab": "open"
+  "open_fridge": "open"
+  'rubiks cube': 'cube'  # Fixed typo: rubriks -> rubiks
+  "cab_push_point_7": "left drawer"
+  "cab_push_point_6": "middle drawer"
+  "cab_push_point_5": "right drawer"
+  "cab_push_point_4": "bottom drawer"

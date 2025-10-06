@@ -1,0 +1,110 @@
+﻿dataset_path: "/data/zxy/trustvlm/EmbodiedBench/robotrustbench/envs/rt_habitat/data/versioned_data/replica_cad_dataset/replicaCAD.scene_dataset_config.json"
+correct_unstable_results: False
+additional_object_paths:
+  - "/data/zxy/trustvlm/EmbodiedBench/robotrustbench/envs/rt_habitat/data/versioned_data/ycb/configs"
+scene_sets:
+  -
+    name: "scene_train_split"
+    included_substrings:
+      - "v3_sc0_staging_04"
+    excluded_substrings: []
+category_groups:
+  "all_cats":
+    included:
+      - "book"
+
+object_sets:
+  - name: "book"
+    included_substrings:
+      - "frl_apartment_book_01"
+receptacle_sets:
+  -
+    name: "sofaa"
+    included_receptacle_substrings:
+      - "receptacle_aabb_Sofa_frl_apartment_sofa"  # Sofa
+    name: "tablee"
+    included_receptacle_substrings:
+      - "receptacle_aabb_Tbl1_Top1_frl_apartment_table_01"
+      - "receptacle_aabb_Tbl2_Top1_frl_apartment_table_02"
+    name: "chairr"
+    included_receptacle_substrings:
+      - "receptacle_aabb_Chr1_Top1_frl_apartment_chair_01"
+    name: "all_receps"
+    included_object_substrings: [""]
+    excluded_object_substrings: []
+    excluded_receptacle_substrings: []
+    included_receptacle_substrings:
+      - "receptacle_aabb_Chr1_Top1_frl_apartment_chair_01"
+      - "receptacle_aabb_Tbl1_Top1_frl_apartment_table_01"
+      - "receptacle_aabb_Tbl2_Top1_frl_apartment_table_02"
+      - "receptacle_aabb_TvStnd1_Top1_frl_apartment_tvstand"
+      - "receptacle_aabb_sink_kitchen_counter"
+      - "receptacle_aabb_Sofa_frl_apartment_sofa"
+      # - "receptacle_aabb_drawer_middle_top_frl_apartment_kitchen_counter"
+
+    name: "open_air_receps" #蹇呴』瑕佹湁锛?    included_object_substrings:
+      - ""
+    excluded_object_substrings: []
+    excluded_receptacle_substrings: []
+    included_receptacle_substrings:
+      # - "receptacle_aabb_Chr1_Top1_frl_apartment_chair_01"
+      - "receptacle_aabb_Tbl1_Top1_frl_apartment_table_01"
+      - "receptacle_aabb_Tbl2_Top1_frl_apartment_table_02"
+      - "receptacle_aabb_counter_right_kitchen_counter"
+      - "receptacle_aabb_counter_left_kitchen_counter"
+      - "receptacle_aabb_Sofa_frl_apartment_sofa"
+max_objects_per_receptacle:
+  - ["receptacle_aabb_Sofa_frl_apartment_sofa", 1]  # Book on sofa
+scene_sampler:
+  type: "subset"
+  params:
+    scene_sets: ["scene_train_split"]
+object_samplers:
+  -
+    name: "book"
+    type: "uniform"
+    params:
+      object_sets: ["book"]
+      receptacle_sets: ["sofa"]
+      num_samples: [30, 30]
+      orientation_sampling: "up"
+markers:
+  - name: "cab_push_point_7"
+    type: "articulated_object"
+    params:
+      offset: [0.3, 0.0, 0]
+      link: "drawer1_top"
+      object: "kitchen_counter_:0000"
+
+  - name: "cab_push_point_6"
+    type: "articulated_object"
+    params:
+      offset: [0.3, 0.0, 0]
+      link: "drawer2_top"
+      object: "kitchen_counter_:0000"
+
+  - name: "cab_push_point_5"
+    type: "articulated_object"
+    params:
+      offset: [0.3, 0.0, 0]
+      link: "drawer3"
+      object: "kitchen_counter_:0000"
+
+  - name: "cab_push_point_4"
+    type: "articulated_object"
+    params:
+      offset: [0.3, 0.0, 0]
+      link: "drawer4"
+      object: "kitchen_counter_:0000"
+
+  - name: "fridge_push_point"
+    type: "articulated_object"
+    params:
+      offset: [0.10, -0.62, 0.2]
+      link: "top_door"
+      object: "fridge_:0000"
+
+
+
+
+
