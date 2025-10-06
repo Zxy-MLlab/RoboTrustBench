@@ -17,9 +17,33 @@
 
 ![BadVLA](./RoboTrustBench.png)
 
-Multimodal large language models (MLLMs) show great potential for embodied tasks, offering pathways toward real-world applications. Yet trustworthy embodied intelligence, which is difficult to ensure in dynamic and complex environments, remains a necessary prerequisite, and no unified benchmark currently exists for its evaluation. To fill this gap, we introduce **RoboTrust**, a comprehensive benchmark for trustworthy embodied intelligence. We provide the first formal and systematic definition of trust in embodied agents, decomposing it into five key dimensions—*Truthfulness*, *Safety*, *Fairness*, *Robustness*, and *Privacy*. Building on this foundation, RoboTrust evaluates these dimensions through 12 fine-grained tasks probing factual consistency, risk perception and response, bias and preference, resilience under perturbations, and privacy protection. Unlike static evaluations, RoboTrust integrates interactive environments with unexpected risks and disturbances, reflecting the complexity of real-world deployment. We benchmark 19 state-of-the-art MLLMs and reveal substantial deficiencies in embodied trust, with models almost uniformly failing on privacy protection and proactive risk avoidance. Furthermore, we observe no positive correlation between trustworthiness and model capability, and explicit reasoning traces offer little improvement, underscoring a fundamental absence of trust awareness in current systems. RoboTrust provides a unified and interactive platform for comprehensive trust evaluation, revealing critical shortcomings of current MLLMs and offering valuable insights for the development of trustworthy embodied agents.
+## 🧠 RoboTrust: A Comprehensive Benchmark for Trustworthy Embodied Intelligence
 
-🌍 **While BadVLA demonstrates the feasibility and severity of backdoor threats in VLA systems, our goal is not to attack, but rather to raise awareness and foster safer VLA development. We hope this work motivates future research on building trustworthy, secure, and robust embodied AI models.**
+**RoboTrust** is a large-scale benchmark designed to evaluate the **trustworthiness of Multimodal Large Language Models (MLLMs)** in embodied and interactive scenarios. It provides the **first unified framework** for assessing *trust* in embodied agents across **five critical dimensions** — **Truthfulness**, **Safety**, **Fairness**, **Robustness**, and **Privacy**.
+
+### 🚀 Key Features
+- **🧩 Five-Dimensional Trust Framework**  
+  Formalizes embodied trust through 5 dimensions and 12 fine-grained tasks, covering factual perception, ethical safety, bias control, environmental robustness, and privacy protection.
+  
+- **🧠 Grounded in Formal Trust Definition**  
+  Provides the first *systematic and operational definition* of trust in embodied agents, serving as a theoretical foundation for future trustworthy AI research.
+  
+- **🏗️ Interactive Embodied Environments**  
+  Unlike static QA benchmarks, RoboTrust introduces *dynamic, risk-aware simulation tasks* that mirror real-world disturbances and contextual uncertainty.
+
+- **📊 Comprehensive Evaluation of 19 MLLMs**  
+  Benchmarks 19 state-of-the-art models (e.g., GPT-4o, Claude-3.5, Gemini-2.5, Qwen-VL-Max, InternVL3, LLaVA-Next, etc.), exposing substantial deficiencies in embodied trust.
+
+### 📦 Benchmark Overview (Five evaluation dimensions, 12 categories of subtasks, and 150 carefully designed embodied interaction tasks)
+| **Dimension** | **Definition** | **Sub-task Types** |
+|----------------|----------------|--------------------|
+| **Truthfulness** | Evaluates whether the model can generate actions consistent with objective facts in the environment, maintaining factual grounding and avoiding contradictory behaviors. | **T1:** Fact-grounded Perception **T2:** Fact-contradicting Instruction Handling |
+| **Safety** | Measures the model’s ability to recognize risks, plan safe actions, and respond to emergent hazards to prevent harm to humans, the environment, or itself. | **S1:** Hazard Recognition **S2:** Safe Planning **S3:** Emergency Response |
+| **Fairness** | Examines whether the model ensures equitable task performance across users and contexts, remaining invariant to irrelevant attributes such as appearance or role. | **F1:** Attribute-based Stereotyping **F2:** Preferential Bias |
+| **Robustness** | Tests whether the model can maintain stable task performance under input noise and dynamic environmental perturbations. | **R1:** Input Perturbation **R2:** Dynamic Environment Adaptation |
+| **Privacy** | Assesses whether the model protects sensitive information and avoids using unnecessary private data during embodied interactions. | **P1:** Privacy-Violating Instruction Recognition **P2:** Privacy Preservation **P3:** Minimal Information Use |
+
+
 
 ---
 
